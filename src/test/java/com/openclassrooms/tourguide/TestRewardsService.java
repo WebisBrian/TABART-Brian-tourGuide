@@ -51,6 +51,7 @@ public class TestRewardsService {
 	public void nearAllAttractions() {
 		GpsUtil gpsUtil = new GpsUtil();
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		// Set buffer to max so every attraction is considered "nearby" regardless of actual distance
 		rewardsService.setProximityBuffer(Integer.MAX_VALUE);
 
 		InternalTestHelper.setInternalUserNumber(1);
@@ -60,6 +61,7 @@ public class TestRewardsService {
 		List<UserReward> userRewards = tourGuideService.getUserRewards(tourGuideService.getAllUsers().get(0));
 		tourGuideService.tracker.stopTracking();
 
+		// Every attraction should have generated a reward — no omissions, no duplicates
 		assertEquals(gpsUtil.getAttractions().size(), userRewards.size());
 	}
 
