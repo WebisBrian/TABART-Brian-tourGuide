@@ -31,8 +31,8 @@ mvn verify
 Run performance tests only :
 
 > ⚠ These tests run against 100,000 users and may take several minutes to complete.
-> - `highVolumeTrackLocation` : must finish within 15 minutes
-> - `highVolumeGetRewards` : must finish within 20 minutes
+> - `highVolumeTrackLocation` : must finish within 15 minutes -> Actually 398 seconds (6.6 minutes)
+> - `highVolumeGetRewards` : must finish within 20 minutes -> Actually 259 seconds (4.3 minutes)
 
 ```bash
 mvn test -Dtest=TestPerformance
