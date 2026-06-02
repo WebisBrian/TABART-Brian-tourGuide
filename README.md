@@ -16,8 +16,26 @@ mvn install:install-file -Dfile=libs/TripPricer.jar -DgroupId=tripPricer -Dartif
 
 # Build & tests
 
+Run all tests (excluding performance tests) :
+
+```bash
+mvn test -Dtest="TestRewardsService,TestTourGuideService,TourguideApplicationTests"
+```
+
+Build and run all tests including performance tests (100,000 users — expect several minutes) :
+
 ```bash
 mvn verify
+```
+
+Run performance tests only :
+
+> ⚠ These tests run against 100,000 users and may take several minutes to complete.
+> - `highVolumeTrackLocation` : must finish within 15 minutes
+> - `highVolumeGetRewards` : must finish within 20 minutes
+
+```bash
+mvn test -Dtest=TestPerformance
 ```
 
 # Run the application
