@@ -19,7 +19,7 @@ mvn install:install-file -Dfile=libs/TripPricer.jar -DgroupId=tripPricer -Dartif
 Run all tests (excluding performance tests) :
 
 ```bash
-mvn test -Dtest="TestRewardsService,TestTourGuideService,TourguideApplicationTests"
+mvn test -DexcludedGroups=performance
 ```
 
 Build and run all tests including performance tests (100,000 users — expect several minutes) :
