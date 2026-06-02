@@ -38,6 +38,20 @@ Run performance tests only :
 mvn test -Dtest=TestPerformance
 ```
 
+# Continuous Integration
+
+The project uses **GitHub Actions** for CI, triggered on every push and pull request to `main` and `develop`.
+
+Pipeline steps (`.github/workflows/ci.yml`) :
+
+| Step | Command | Description |
+|---|---|---|
+| Compile | `mvn compile` | Verifies the code compiles without errors |
+| Test | `mvn test` | Runs all tests except performance tests |
+| Build | `mvn package` | Produces the executable JAR artifact |
+
+> Performance tests are excluded from the CI pipeline as they run against 100,000 users and would significantly slow down the pipeline. Run them locally with `mvn test -Dtest=TestPerformance`.
+
 # Run the application
 
 ```bash
