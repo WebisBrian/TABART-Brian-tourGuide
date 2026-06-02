@@ -42,7 +42,7 @@ jobs:
       # 100,000 users and would take several minutes, making the pipeline too slow
       # for rapid feedback. Run them locally with: mvn test -Dtest=TestPerformance
       - name: Test (excluding performance tests)
-        run: mvn test -Dexclude=**/TestPerformance.java
+        run: mvn test -Dexcludes=**/TestPerformance.java
 
       # Step 3 — produce the executable JAR artifact.
       # Tests are skipped here as they already ran in the previous step.
