@@ -51,7 +51,7 @@ jobs:
 
       # Store the JAR so it can be downloaded directly from the GitHub Actions run
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: tourguide
           path: target/*.jar
