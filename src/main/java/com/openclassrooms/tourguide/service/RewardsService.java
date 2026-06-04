@@ -105,12 +105,16 @@ public class RewardsService {
         }
     }
 
+    /**
+     * Returns whether a location is within the attraction proximity range (in miles).
+     * Retained for test usage: the production nearby-attractions logic no longer filters by distance.
+     */
     public boolean isWithinAttractionProximity(Attraction attraction, Location location) {
-        return getDistance(attraction, location) > attractionProximityRange ? false : true;
+        return getDistance(attraction, location) <= attractionProximityRange;
     }
 
     private boolean nearAttraction(VisitedLocation visitedLocation, Attraction attraction) {
-        return getDistance(attraction, visitedLocation.location) > proximityBuffer ? false : true;
+        return getDistance(attraction, visitedLocation.location) <= proximityBuffer;
     }
 
     /**
