@@ -49,21 +49,20 @@ public class RewardsService {
 		CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
 	}
 
-	public void calculateRewards(User user) {
-		List<VisitedLocation> userLocations = new ArrayList<>(user.getVisitedLocations());
-		List<Attraction> attractions = gpsUtil.getAttractions();
+    public void calculateRewards(User user) {
+        List<VisitedLocation> userLocations = new ArrayList<>(user.getVisitedLocations());
+        List<Attraction> attractions = gpsUtil.getAttractions();
 
-		for(VisitedLocation visitedLocation : userLocations) {
-			for(Attraction attraction : attractions) {
-				List<UserReward> userRewards = new ArrayList<>(user.getUserRewards());
-				if(userRewards.stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
-					if(nearAttraction(visitedLocation, attraction)) {
-						user.addUserReward(new UserReward(visitedLocation, attraction, getRewardPoints(attraction, user)));
-					}
-				}
-			}
-		}
-	}
+        for (VisitedLocation visitedLocation : userLocations) {
+            for (Attraction attraction : attractions) {
+                boolean alreadyRewarded = user.getUserRewards().stream()
+                        .anyMatch(r -> r.attraction.attractionName.equals(attraction.attractionName));
+                if (!alreadyRewarded && nearAttraction(visitedLocation, attraction)) {
+                    user.addUserReward(new UserReward(visitedLocation, attraction, getRewardPoints(attraction, user)));
+                }
+            }
+        }
+    }
 	
 	public boolean isWithinAttractionProximity(Attraction attraction, Location location) {
 		return getDistance(attraction, location) > attractionProximityRange ? false : true;
