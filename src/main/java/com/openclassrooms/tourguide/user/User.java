@@ -68,12 +68,13 @@ public class User {
 	public void clearVisitedLocations() {
 		visitedLocations.clear();
 	}
-	
-	public synchronized void addUserReward(UserReward userReward) {
-		if(userRewards.stream().filter(r -> r.attraction.attractionName.equals(userReward.attraction.attractionName)).count() == 0) {
-			userRewards.add(userReward);
-		}
-	}
+
+    public synchronized void addUserReward(UserReward userReward) {
+        if (userRewards.stream().anyMatch(r -> r.attraction.attractionName.equals(userReward.attraction.attractionName))) {
+            return;
+        }
+        userRewards.add(userReward);
+    }
 	
 	public List<UserReward> getUserRewards() {
 		return userRewards;
