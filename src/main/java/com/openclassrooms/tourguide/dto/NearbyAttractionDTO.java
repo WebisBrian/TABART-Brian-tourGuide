@@ -1,14 +1,18 @@
 package com.openclassrooms.tourguide.dto;
 
+/**
+ * DTO exposing a nearby attraction enriched with attraction coordinates, user coordinates,
+ * distance in miles, and reward points for the /getNearbyAttractions REST response.
+ */
 public class NearbyAttractionDTO {
 
-    private String attractionName;
-    private double attractionLatitude;
-    private double attractionLongitude;
-    private double userLatitude;
-    private double userLongitude;
-    private double distanceInMiles;
-    private int rewardPoints;
+    private final String attractionName;
+    private final double attractionLatitude;
+    private final double attractionLongitude;
+    private final double userLatitude;
+    private final double userLongitude;
+    private final double distanceInMiles;
+    private final int rewardPoints;
 
     public NearbyAttractionDTO(String attractionName, double attractionLatitude, double attractionLongitude,
                                 double userLatitude, double userLongitude,
