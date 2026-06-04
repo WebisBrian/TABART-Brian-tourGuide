@@ -125,7 +125,11 @@ public class TourGuideService {
      */
     public void trackAllUsersLocation(List<User> users) {
         List<CompletableFuture<Void>> futures = users.stream()
-                .map(user -> CompletableFuture.runAsync(() -> trackUserLocation(user), executorService))
+                .map(user -> CompletableFuture.runAsync(() -> trackUserLocation(user), executorService)
+                        .exceptionally(ex -> {
+                            logger.error("Failed to track location for user {}", user.getUserId(), ex);
+                            return null;
+                        }))
                 .collect(Collectors.toList());
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
     }

@@ -9,6 +9,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import jakarta.annotation.PreDestroy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import gpsUtil.GpsUtil;
@@ -26,6 +28,7 @@ import com.openclassrooms.tourguide.user.UserReward;
  */
 @Service
 public class RewardsService {
+    private static final Logger logger = LoggerFactory.getLogger(RewardsService.class);
     private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
 
     // proximity in miles
@@ -62,7 +65,11 @@ public class RewardsService {
      */
     public void calculateAllRewards(List<User> users) {
         List<CompletableFuture<Void>> futures = users.stream()
-                .map(user -> CompletableFuture.runAsync(() -> calculateRewards(user), executorService))
+                .map(user -> CompletableFuture.runAsync(() -> calculateRewards(user), executorService)
+                        .exceptionally(ex -> {
+                            logger.error("Failed to calculate rewards for user {}", user.getUserId(), ex);
+                            return null;
+                        }))
                 .collect(Collectors.toList());
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
     }

@@ -2,6 +2,8 @@ package com.openclassrooms.tourguide;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +23,8 @@ import tripPricer.Provider;
  */
 @RestController
 public class TourGuideController {
+
+    private static final Logger logger = LoggerFactory.getLogger(TourGuideController.class);
 
     private final TourGuideService tourGuideService;
 
@@ -80,6 +84,7 @@ public class TourGuideController {
     private User getUser(String userName) {
         User user = tourGuideService.getUser(userName);
         if (user == null) {
+            logger.warn("User not found: {}", userName);
             throw new UserNotFoundException(userName);
         }
         return user;
