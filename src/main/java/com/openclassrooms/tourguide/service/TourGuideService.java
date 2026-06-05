@@ -96,11 +96,24 @@ public class TourGuideService {
         }
     }
 
+    /**
+     * Returns trip deal offers for the user, computed by the external TripPricer library
+     * from the user's preferences and total accumulated reward points.
+     * Reward points influence the price of each offer, not their count — TripPricer always
+     * returns exactly 5 providers. The offers are also stored on the user via
+     * {@link User#setTripDeals(List)} before being returned.
+     *
+     * @param user the user for whom to compute trip deals
+     * @return list of 5 Provider offers
+     */
     public List<Provider> getTripDeals(User user) {
-        int cumulatativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
+        int cumulatativeRewardPoints = user.getUserRewards().stream()
+                .mapToInt(i -> i.getRewardPoints()).sum();
         List<Provider> providers = tripPricer.getPrice(tripPricerApiKey, user.getUserId(),
-                user.getUserPreferences().getNumberOfAdults(), user.getUserPreferences().getNumberOfChildren(),
-                user.getUserPreferences().getTripDuration(), cumulatativeRewardPoints);
+                user.getUserPreferences().getNumberOfAdults(),
+                user.getUserPreferences().getNumberOfChildren(),
+                user.getUserPreferences().getTripDuration(),
+                cumulatativeRewardPoints);
         user.setTripDeals(providers);
         return providers;
     }
