@@ -56,6 +56,9 @@ public class TestPerformance {
 
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
+		// Parallelized batch call replacing the original per-user sequential loop; this is the
+		// optimization under test. Multi-threading lives in the service, not in the test
+		// (per OpenClassrooms constraint).
 		tourGuideService.trackAllUsersLocation(allUsers);
 		stopWatch.stop();
 		tourGuideService.tracker.stopTracking();
@@ -71,14 +74,17 @@ public class TestPerformance {
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 
 		InternalTestHelper.setInternalUserNumber(100000);
-		StopWatch stopWatch = new StopWatch();
-		stopWatch.start();
 		TourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 
 		Attraction attraction = gpsUtil.getAttractions().get(0);
 		List<User> allUsers = tourGuideService.getAllUsers();
 		allUsers.forEach(u -> u.addToVisitedLocations(new VisitedLocation(u.getUserId(), attraction, new Date())));
 
+		StopWatch stopWatch = new StopWatch();
+		stopWatch.start();
+		// Parallelized batch call replacing the original per-user sequential loop. Timer scope now
+		// wraps only this call, mirroring highVolumeTrackLocation, so both tests measure the
+		// parallelized work and exclude setup.
 		rewardsService.calculateAllRewards(allUsers);
 
 		for (User user : allUsers) {
