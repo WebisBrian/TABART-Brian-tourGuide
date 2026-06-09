@@ -69,11 +69,25 @@ parallélisé afin de respecter des objectifs de temps stricts.
 
 `gpsUtil`, `RewardCentral` et `tripPricer` ne sont pas disponibles sur Maven Central.
 Ils sont fournis dans le dossier `libs/` et doivent être installés **une seule fois**
-dans le dépôt Maven local, depuis la **racine du projet** (compatible Windows, Linux et macOS) :
+dans le dépôt Maven local, depuis la **racine du projet** (compatible Windows, Linux et macOS).
+
+Exécuter les trois commandes, une par une :
+
+**1. gpsUtil**
 
 ```bash
 mvn install:install-file -Dfile=libs/gpsUtil.jar -DgroupId=gpsUtil -DartifactId=gpsUtil -Dversion=1.0.0 -Dpackaging=jar
+```
+
+**2. RewardCentral**
+
+```bash
 mvn install:install-file -Dfile=libs/RewardCentral.jar -DgroupId=rewardCentral -DartifactId=rewardCentral -Dversion=1.0.0 -Dpackaging=jar
+```
+
+**3. TripPricer**
+
+```bash
 mvn install:install-file -Dfile=libs/TripPricer.jar -DgroupId=tripPricer -DartifactId=tripPricer -Dversion=1.0.0 -Dpackaging=jar
 ```
 
@@ -99,10 +113,13 @@ mvn verify
 
 > ⚠️ Ces tests s'exécutent sur **100 000 utilisateurs** et peuvent durer plusieurs minutes.
 
-| Test | Objectif contractuel | Résultat mesuré |
-|---|---|---|
-| `highVolumeTrackLocation` | < 15 minutes | ~392 s (~6,5 min) |
-| `highVolumeGetRewards` | < 20 minutes | ~264 s (~4,4 min) |
+La parallélisation des traitements (CompletableFuture + pool de threads) a permis de
+passer de plusieurs heures à quelques minutes :
+
+| Mesure (100 000 users) | Baseline | Après optimisation | Seuil | |
+|---|---|---|---|:---:|
+| `trackLocation` | ~7 579 s (~2 h 06) | ~392 s (~6,5 min) | < 15 min | ✅ |
+| `getRewards` | ~64 020 s (~17 h 47) | ~264 s (~4,4 min) | < 20 min | ✅ |
 
 Lancer uniquement les tests de performance :
 
