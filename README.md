@@ -1,9 +1,6 @@
 <p align="center">
-  <!-- TODO : remplacer par une vraie image / bannière (ex: capture de l'app, logo, diagramme) -->
-  <img src="docs/banner.png" alt="TourGuide" width="640"/>
+  <img src=".readme/logo.png" alt="TourGuide" width="640"/>
 </p>
-
-<h1 align="center">TourGuide</h1>
 
 <p align="center">
   Application Spring Boot de recommandation touristique :<br/>
@@ -16,6 +13,10 @@
   <img src="https://img.shields.io/badge/Maven-build-C71A36?logo=apachemaven&logoColor=white" alt="Maven"/>
   <img src="https://img.shields.io/badge/Tests-JUnit%205-25A162?logo=junit5&logoColor=white" alt="JUnit 5"/>
   <img src="https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white" alt="GitHub Actions"/>
+</p>
+
+<p align="center">
+  <img src=".readme/louvre_banner.jpg" alt="TourGuide" width="100%"/>
 </p>
 
 ---
