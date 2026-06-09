@@ -1,12 +1,75 @@
-# Technologies
+<p align="center">
+  <!-- TODO : remplacer par une vraie image / bannière (ex: capture de l'app, logo, diagramme) -->
+  <img src="docs/banner.png" alt="TourGuide" width="640"/>
+</p>
 
-> Java 17  
-> Spring Boot 3.X  
-> JUnit 5  
+<h1 align="center">TourGuide</h1>
 
-# Setup — Install local dependencies
+<p align="center">
+  Application Spring Boot de recommandation touristique :<br/>
+  suivi de la position GPS des utilisateurs, attractions proches et offres de voyage.
+</p>
 
-Run the following commands **once** from the **project root** (works on Windows, Linux and macOS) :
+<p align="center">
+  <img src="https://img.shields.io/badge/Java-17-007396?logo=openjdk&logoColor=white" alt="Java 17"/>
+  <img src="https://img.shields.io/badge/Spring%20Boot-3.1.1-6DB33F?logo=springboot&logoColor=white" alt="Spring Boot 3.1.1"/>
+  <img src="https://img.shields.io/badge/Maven-build-C71A36?logo=apachemaven&logoColor=white" alt="Maven"/>
+  <img src="https://img.shields.io/badge/Tests-JUnit%205-25A162?logo=junit5&logoColor=white" alt="JUnit 5"/>
+  <img src="https://img.shields.io/badge/CI-GitHub%20Actions-2088FF?logo=githubactions&logoColor=white" alt="GitHub Actions"/>
+</p>
+
+---
+
+## Sommaire
+
+- [Présentation](#présentation)
+- [Stack technique](#stack-technique)
+- [Prérequis](#prérequis)
+- [Installation des dépendances locales](#installation-des-dépendances-locales)
+- [Build & tests](#build--tests)
+- [Tests de performance](#tests-de-performance)
+- [Intégration continue](#intégration-continue)
+- [Lancer l'application](#lancer-lapplication)
+- [Endpoints](#endpoints)
+
+---
+
+## Présentation
+
+TourGuide est une API REST qui suit la position GPS d'utilisateurs et leur propose
+les attractions les plus proches ainsi que des offres de voyage personnalisées.
+
+Le projet s'appuie sur trois librairies externes simulant des services réels à la
+latence variable (`gpsUtil`, `RewardCentral`, `tripPricer`). L'enjeu technique
+central est la **montée en charge** : le traitement de 100 000 utilisateurs est
+parallélisé afin de respecter des objectifs de temps stricts.
+
+---
+
+## Stack technique
+
+| Composant | Version |
+|---|---|
+| Java | 17 |
+| Spring Boot | 3.1.1 |
+| Maven | build & gestion des dépendances |
+| JUnit 5 | tests unitaires, d'intégration et de performance |
+| GitHub Actions | intégration continue |
+
+---
+
+## Prérequis
+
+- **JDK 17**
+- **Maven 3.8+**
+
+---
+
+## Installation des dépendances locales
+
+`gpsUtil`, `RewardCentral` et `tripPricer` ne sont pas disponibles sur Maven Central.
+Ils sont fournis dans le dossier `libs/` et doivent être installés **une seule fois**
+dans le dépôt Maven local, depuis la **racine du projet** (compatible Windows, Linux et macOS) :
 
 ```bash
 mvn install:install-file -Dfile=libs/gpsUtil.jar -DgroupId=gpsUtil -DartifactId=gpsUtil -Dversion=1.0.0 -Dpackaging=jar
@@ -14,54 +77,87 @@ mvn install:install-file -Dfile=libs/RewardCentral.jar -DgroupId=rewardCentral -
 mvn install:install-file -Dfile=libs/TripPricer.jar -DgroupId=tripPricer -DartifactId=tripPricer -Dversion=1.0.0 -Dpackaging=jar
 ```
 
-# Build & tests
+---
 
-Run all tests (excluding performance tests) :
+## Build & tests
+
+Exécuter l'ensemble des tests **hors tests de performance** :
 
 ```bash
 mvn test -DexcludedGroups=performance
 ```
 
-Build and run all tests including performance tests (100,000 users — expect several minutes) :
+Build complet, **tous les tests inclus** (100 000 utilisateurs — plusieurs minutes attendues) :
 
 ```bash
 mvn verify
 ```
 
-Run performance tests only :
+---
 
-> ⚠ These tests run against 100,000 users and may take several minutes to complete.
-> - `highVolumeTrackLocation` : must finish within 15 minutes -> Actually 398 seconds (6.6 minutes)
-> - `highVolumeGetRewards` : must finish within 20 minutes -> Actually 259 seconds (4.3 minutes)
+## Tests de performance
+
+> ⚠️ Ces tests s'exécutent sur **100 000 utilisateurs** et peuvent durer plusieurs minutes.
+
+| Test | Objectif contractuel | Résultat mesuré |
+|---|---|---|
+| `highVolumeTrackLocation` | < 15 minutes | ~392 s (~6,5 min) |
+| `highVolumeGetRewards` | < 20 minutes | ~264 s (~4,4 min) |
+
+Lancer uniquement les tests de performance :
 
 ```bash
 mvn test -Dtest=TestPerformance
 ```
 
-# Continuous Integration
+---
 
-The project uses **GitHub Actions** for CI, triggered on every push and pull request to `main` and `develop`.
+## Intégration continue
 
-Pipeline steps (`.github/workflows/ci.yml`) :
+Le projet utilise **GitHub Actions**, déclenché à chaque push et pull request sur
+les branches `main` et `develop`.
 
-| Step | Command | Description |
+Étapes du pipeline (`.github/workflows/ci.yml`) :
+
+| Étape | Commande | Description |
 |---|---|---|
-| Compile | `mvn compile` | Verifies the code compiles without errors |
-| Test | `mvn test` | Runs all tests except performance tests |
-| Build | `mvn package` | Produces the executable JAR artifact |
+| Compile | `mvn compile` | Vérifie que le code compile sans erreur |
+| Test | `mvn test -DexcludedGroups=performance` | Exécute tous les tests hors performance |
+| Build | `mvn package -DskipTests` | Produit l'artefact JAR exécutable |
 
-> Performance tests are excluded from the CI pipeline as they run against 100,000 users and would significantly slow down the pipeline. Run them locally with `mvn test -Dtest=TestPerformance`.
+> Les tests de performance sont exclus de la CI : ils s'exécutent sur 100 000
+> utilisateurs et ralentiraient considérablement le pipeline. Ils se lancent
+> localement avec `mvn test -Dtest=TestPerformance`.
 
-# Run the application
+---
+
+## Lancer l'application
 
 ```bash
 mvn spring-boot:run
 ```
 
-Or via the generated JAR (after `mvn verify`) :
+Ou via le JAR généré (après `mvn verify`) :
 
 ```bash
 java -jar target/tourguide-0.0.1-SNAPSHOT.jar
 ```
 
-The application starts on **http://localhost:8080**
+L'application démarre sur **http://localhost:8080**
+
+---
+
+## Endpoints
+
+| Méthode | Endpoint | Description |
+|---|---|---|
+| `GET` | `/getLocation?userName=` | Dernière position GPS de l'utilisateur |
+| `GET` | `/getNearbyAttractions?userName=` | Les 5 attractions les plus proches (enrichies) |
+| `GET` | `/getRewards?userName=` | Récompenses accumulées |
+| `GET` | `/getTripDeals?userName=` | Offres de voyage |
+
+Exemple :
+
+```
+GET http://localhost:8080/getNearbyAttractions?userName=internalUser0
+```
