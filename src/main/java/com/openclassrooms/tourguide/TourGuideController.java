@@ -58,7 +58,7 @@ public class TourGuideController {
     public List<NearbyAttractionDTO> getNearbyAttractions(@RequestParam String userName) {
         User user = getUser(userName);
         VisitedLocation visitedLocation = tourGuideService.getUserLocation(user);
-        return tourGuideService.getNearByAttractionsDTO(visitedLocation, user);
+        return tourGuideService.getNearbyAttractionsDTO(visitedLocation, user);
     }
 
     /**

@@ -154,7 +154,7 @@ public class TourGuideService {
      *
      * @return list of 5 nearest attractions, closest first
      */
-    public List<Attraction> getNearByAttractions(VisitedLocation visitedLocation) {
+    public List<Attraction> getNearbyAttractions(VisitedLocation visitedLocation) {
         return gpsUtil.getAttractions().stream()
                 .sorted(Comparator.comparingDouble(a -> rewardsService.getDistance(a, visitedLocation.location)))
                 .limit(5)
@@ -162,12 +162,12 @@ public class TourGuideService {
     }
 
     /**
-     * REST-facing variant of {@link #getNearByAttractions(VisitedLocation)}: enriches
+     * REST-facing variant of {@link #getNearbyAttractions(VisitedLocation)}: enriches
      * each attraction with user coordinates, distance, and reward points for direct
      * serialisation by the controller.
      */
-    public List<NearbyAttractionDTO> getNearByAttractionsDTO(VisitedLocation visitedLocation, User user) {
-        return getNearByAttractions(visitedLocation).stream()
+    public List<NearbyAttractionDTO> getNearbyAttractionsDTO(VisitedLocation visitedLocation, User user) {
+        return getNearbyAttractions(visitedLocation).stream()
                 .map(attraction -> new NearbyAttractionDTO(
                         attraction.attractionName,
                         attraction.latitude,
