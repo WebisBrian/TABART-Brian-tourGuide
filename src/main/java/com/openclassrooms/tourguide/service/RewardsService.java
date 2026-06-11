@@ -75,11 +75,18 @@ public class RewardsService {
     }
 
     /**
-     * Assigns reward points for every attraction the user has visited and not yet been rewarded for.
-     * Both lists are snapshotted defensively at entry ({@code new ArrayList<>}) because the Tracker
-     * may concurrently append to {@code visitedLocations} or {@code userRewards} on the same user.
-     * The duplicate check here is a best-effort optimisation; the atomic uniqueness guarantee
-     * lives in {@link com.openclassrooms.tourguide.user.User#addUserReward(UserReward)}.
+     * Assigns reward points for every visited location that is near an attraction
+     * the user has not yet been rewarded for.
+     * <p>
+     * {@code visitedLocations} is snapshotted defensively at entry ({@code new ArrayList<>})
+     * because the Tracker may concurrently append to it on the same user while this method
+     * iterates. The duplicate check reads {@code userRewards} directly — a best-effort
+     * optimisation to skip a costly {@link #getRewardPoints} call when the reward already
+     * exists. The atomic uniqueness guarantee does not live here but in
+     * {@link com.openclassrooms.tourguide.user.User#addUserReward(UserReward)}, which is
+     * {@code synchronized}.
+     *
+     * @param user the user whose rewards are computed
      */
     public void calculateRewards(User user) {
         List<VisitedLocation> userLocations = new ArrayList<>(user.getVisitedLocations());
